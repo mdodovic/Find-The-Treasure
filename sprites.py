@@ -160,7 +160,6 @@ class Aki(Agent):
 
     def get_agent_path(self, game_map, goal):
 
-        # path1 = [game_map[self.row][self.col]]
         print(goal)
         path = []
 
@@ -192,15 +191,6 @@ class Aki(Agent):
             row = next_row
             col = next_col
 
-            # if row != goal[0]:
-            #     row = row + 1 if row < goal[0] else row - 1
-            # elif col != goal[1]:
-            #     col = col + 1 if col < goal[1] else col - 1
-            # else:
-            #     break
-
-            # path1.append(game_map[row][col])
-        # return path1
         path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations)
         path_tuples.reverse()
 
@@ -210,7 +200,6 @@ class Aki(Agent):
             path_fields.append(game_map[row_col[0]][row_col[1]])
 
         return path_fields
-
 
 
 class Tile(BaseSprite):
