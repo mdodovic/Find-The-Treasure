@@ -71,7 +71,18 @@ class Aki(Agent):
         super().__init__(row, col, file_name)
 
     def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations) -> list:
+        """
+        This method returns the list of fields from the tree bottom, that is given as an argument, to the tree root
+        Fields are described as an arranged couple (row, column)
 
+        :param root_row: root of the tree - row
+        :param root_col: root of the tree - column
+        :param start_row: position from which the path is calculated - row
+        :param start_col: position from which the path is calculated - column
+        :param current_father_son_relations: list of relations between nodes in the tree,
+        each element of the list contains two tuples, first is father node and the second is son node
+        :return: list of fields from start node to the root of the tree
+        """
         path_to_root = [(start_row, start_col)]
 
         while (start_row, start_col) != (root_row, root_col):
