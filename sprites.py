@@ -106,21 +106,12 @@ class Aki(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        print(top_edge, right_edge, bottom_edge, left_edge)
-
-        # prepare next values for determining what is the next expanding field
-        # next_row = current_row  # dummy value
-        # next_col = current_col  # dummy value
-        # next_cost = game_map[current_row][current_col]  # dummy value
-
         path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations)
-        print(path_to_root)
 
         valid_neighbours = []
 
         if top_edge < current_row:
             # north direction
-            print(game_map[current_row - 1][current_col])
             next_row = current_row - 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
@@ -130,7 +121,6 @@ class Aki(Agent):
 
         if current_col < right_edge:
             # east direction
-            print(game_map[current_row][current_col + 1])
             next_row = current_row
             next_col = current_col + 1
             next_cost = game_map[next_row][next_col].cost()
@@ -140,7 +130,6 @@ class Aki(Agent):
 
         if current_row < bottom_edge:
             # south direction
-            print(game_map[current_row + 1][current_col])
             next_row = current_row + 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
@@ -150,7 +139,6 @@ class Aki(Agent):
 
         if left_edge < current_col:
             # west direction
-            print(game_map[current_row][current_col - 1])
             next_row = current_row
             next_col = current_col - 1
             next_cost = game_map[next_row][next_col].cost()
@@ -171,9 +159,6 @@ class Aki(Agent):
 
     def get_agent_path(self, game_map, goal):
 
-        print(goal)
-        path = []
-
         row = self.row
         col = self.col
 
@@ -181,8 +166,7 @@ class Aki(Agent):
         father_son_relations = []
 
         while True:
-            print()
-            print("expanded", row, col)
+            # print("expanded", row, col)
 
             neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations)
 
@@ -190,7 +174,7 @@ class Aki(Agent):
 
             next_row, next_col = list_for_expanding.pop()
 
-            print("go to", next_row, next_col)
+            # print("go to", next_row, next_col)
 
             father_son_relations.append([(row, col), (next_row, next_col)])
 
@@ -222,6 +206,10 @@ class Jocke(Agent):
 
         row = self.row
         col = self.col
+
+        list_for_expanding = []
+        father_son_relations = []
+
         while True:
             if row != goal[0]:
                 row = row + 1 if row < goal[0] else row - 1
