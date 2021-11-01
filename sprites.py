@@ -201,24 +201,191 @@ class Jocke(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
+    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
+
+        path_to_root = [(start_row, start_col)]
+
+        index = index_of_father
+        while index != -1:
+
+            father_row, father_col, next_father_index = current_father_son_relations[index]
+
+            path_to_root.append((father_row, father_col))
+
+            index = next_father_index
+
+        return path_to_root
+
+    def __get_all_neighbours_except_fathers(self, game_map, current_row, current_col, father_row, father_col) -> list:
+        # edges of the board
+        top_edge = 0
+        right_edge = len(game_map[current_row]) - 1
+        bottom_edge = len(game_map) - 1
+        left_edge = 0
+
+        all_neighbours = []
+
+        if top_edge < current_row:
+            # north direction
+            next_row = current_row - 1
+            next_col = current_col
+
+            if (next_row, next_col) != (father_row, father_col):
+                all_neighbours.append((next_row, next_col))
+
+        if current_col < right_edge:
+            # east direction
+            next_row = current_row
+            next_col = current_col + 1
+
+            if (next_row, next_col) != (father_row, father_col):
+                all_neighbours.append((next_row, next_col))
+
+        if current_row < bottom_edge:
+            # south direction
+            next_row = current_row + 1
+            next_col = current_col
+
+            if (next_row, next_col) != (father_row, father_col):
+                all_neighbours.append((next_row, next_col))
+
+        if left_edge < current_col:
+            # west direction
+            next_row = current_row
+            next_col = current_col - 1
+
+            if (next_row, next_col) != (father_row, father_col):
+                all_neighbours.append((next_row, next_col))
+
+        return all_neighbours
+
+    def __add_neighbours_to_father_son_relations(self, neighbours, father_son_relations, index_for_sons):
+
+        for neighbour in neighbours:
+            father_son_relations.append((neighbour[0], neighbour[1], index_for_sons))
+
+
+
+    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father) -> list:
+
+        # edges of the board
+        top_edge = 0
+        right_edge = len(game_map[current_row]) - 1
+        bottom_edge = len(game_map) - 1
+        left_edge = 0
+
+        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
+
+        valid_neighbours = []
+
+        if top_edge < current_row:
+            # north direction
+            next_row = current_row - 1
+            next_col = current_col
+            next_average = 0
+
+            if (next_row, next_col) not in path_to_root:
+                valid_neighbours.append([next_row, next_col, next_average, 4])
+
+        if current_col < right_edge:
+            # east direction
+            next_row = current_row
+            next_col = current_col + 1
+            next_average = 0
+
+            if (next_row, next_col) not in path_to_root:
+                valid_neighbours.append([next_row, next_col, next_average, 3])
+
+        if current_row < bottom_edge:
+            # south direction
+            next_row = current_row + 1
+            next_col = current_col
+            next_average = 0
+
+            if (next_row, next_col) not in path_to_root:
+                valid_neighbours.append([next_row, next_col, next_average, 2])
+
+        if left_edge < current_col:
+            # west direction
+            next_row = current_row
+            next_col = current_col - 1
+            next_average = 0
+
+            if (next_row, next_col) not in path_to_root:
+                valid_neighbours.append([next_row, next_col, next_average, 1])
+
+        return valid_neighbours
+
+    def __calculate_average_cost_of_neighbours(self, game_map, father_row, father_col, neighbours):
+
+        for i in range(len(neighbours)):
+
+            current_field_row = neighbours[i][0]
+            current_field_col = neighbours[i][1]
+
+            all_neighbours_except_fathers = self.__get_all_neighbours_except_fathers(game_map, current_field_row, current_field_col, father_row, father_col)
+
+            neighbours[i][2] = 0
+            for current_field_neighbour in all_neighbours_except_fathers:
+                neighbours[i][2] += game_map[current_field_neighbour[0]][current_field_neighbour[1]].cost()
+
+            neighbours[i][2] /= 1.0 * len(all_neighbours_except_fathers)
+
+    def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
+
+        neighbours.sort(key=lambda elem: [elem[2], -elem[3]])
+
+        for neighbour in neighbours:
+            list_for_expanding.append((neighbour[0], neighbour[1], father_index))
+
     def get_agent_path(self, game_map, goal):
-        path = [game_map[self.row][self.col]]
 
         row = self.row
         col = self.col
 
-        list_for_expanding = []
-        father_son_relations = []
+        list_for_expanding = [(row, col, -1)]
+        father_son_relations = [(row, col, -1)]
+
+        final_row = -1
+        final_col = -1
 
         while True:
-            if row != goal[0]:
-                row = row + 1 if row < goal[0] else row - 1
-            elif col != goal[1]:
-                col = col + 1 if col < goal[1] else col - 1
-            else:
+
+            row, col, index_of_father = list_for_expanding.pop(0)
+            index_for_sons = father_son_relations.index((row, col, index_of_father))
+
+            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father)
+
+            self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
+
+            self.__calculate_average_cost_of_neighbours(game_map, row, col, neighbours)
+
+            self.__insert_neighbours_in_appropriate_order(neighbours, list_for_expanding, index_for_sons)
+
+            for neighbour in neighbours:
+                if (neighbour[0], neighbour[1]) == goal:
+
+                    final_row = neighbour[0]  # this is goal position - row
+                    final_col = neighbour[1]  # this is goal position - col
+                    final_index_of_father = index_for_sons  # here we stop our bfs on first find of goal
+                    # so we need to start from the position of goal, and to fetch its father
+                    # because we are in the father's context, index_for_sons is the father's index in the goal's context!
+                    break
+
+            if (final_row, final_col) != (-1, -1):
                 break
-            path.append(game_map[row][col])
-        return path
+
+        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
+        path_tuples.reverse()
+
+        path_fields = []
+
+        for row_col in path_tuples:
+            path_fields.append(game_map[row_col[0]][row_col[1]])
+
+        return path_fields
+
+
 
 
 class Tile(BaseSprite):
