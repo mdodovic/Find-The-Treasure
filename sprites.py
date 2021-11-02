@@ -346,6 +346,7 @@ class Jocke(Agent):
 
         final_row = -1
         final_col = -1
+        final_index_of_father = -1
 
         while True:
 
