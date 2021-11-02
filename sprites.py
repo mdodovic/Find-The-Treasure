@@ -385,7 +385,24 @@ class Jocke(Agent):
 
         return path_fields
 
+class Draza(Agent):
+    def __init__(self, row, col, file_name):
+        super().__init__(row, col, file_name)
 
+    def get_agent_path(self, game_map, goal):
+        path = [game_map[self.row][self.col]]
+
+        row = self.row
+        col = self.col
+        while True:
+            if row != goal[0]:
+                row = row + 1 if row < goal[0] else row - 1
+            elif col != goal[1]:
+                col = col + 1 if col < goal[1] else col - 1
+            else:
+                break
+            path.append(game_map[row][col])
+        return path
 
 
 class Tile(BaseSprite):
