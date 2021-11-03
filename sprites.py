@@ -384,6 +384,7 @@ class Jocke(Agent):
 
         return path_fields
 
+
 class Draza(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
@@ -516,7 +517,6 @@ class Draza(Agent):
         return path_fields
 
 
-
 class Tile(BaseSprite):
     def __init__(self, row, col, file_name):
         super(Tile, self).__init__(row, col, file_name)
@@ -574,6 +574,7 @@ class Road(Tile):
 
     def __str__(self) -> str:
         return "Road [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
 
 class Grass(Tile):
     def __init__(self, row, col):
