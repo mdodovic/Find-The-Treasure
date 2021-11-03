@@ -412,7 +412,7 @@ class Draza(Agent):
         left_edge = 0
 
         path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
-        number_of_fields_to_rooth = len(path_to_root)
+        number_of_fields_to_root = len(path_to_root)
 
         valid_neighbours = []
 
@@ -423,7 +423,7 @@ class Draza(Agent):
             next_cost = game_map[next_row][next_col].cost()
 
             if (next_row, next_col) not in path_to_root:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_rooth, 4])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 4])
 
         if current_col < right_edge:
             # east direction
@@ -432,7 +432,7 @@ class Draza(Agent):
             next_cost = game_map[next_row][next_col].cost()
 
             if (next_row, next_col) not in path_to_root:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_rooth, 3])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 3])
 
         if current_row < bottom_edge:
             # south direction
@@ -441,7 +441,7 @@ class Draza(Agent):
             next_cost = game_map[next_row][next_col].cost()
 
             if (next_row, next_col) not in path_to_root:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_rooth, 2])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 2])
 
         if left_edge < current_col:
             # west direction
@@ -450,7 +450,7 @@ class Draza(Agent):
             next_cost = game_map[next_row][next_col].cost()
 
             if (next_row, next_col) not in path_to_root:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_rooth, 1])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 1])
 
         return valid_neighbours
 
@@ -461,19 +461,22 @@ class Draza(Agent):
 
     def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
 
-        neighbours.sort(key=lambda elem: [elem[2], elem[3], -elem[4]])
-
-        neighbours.reverse()
-
         for neighbour in neighbours:
-            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], father_index))
+            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], neighbour[3], neighbour[4], father_index))
+
+        list_for_expanding.sort(key=lambda elem: (elem[2], elem[3], -elem[4]))
+
+    def __remove_more_expensive_fields(self, row, col, list_for_expanding):
+
+        new_list_for_expanding = [field for field in list_for_expanding if field[0] != row or field[1] != col]
+        return new_list_for_expanding
 
     def get_agent_path(self, game_map, goal):
 
         row = self.row
         col = self.col
 
-        list_for_expanding = [(row, col, 0, -1)]
+        list_for_expanding = [(row, col, 0, 0, 0, -1)]
         father_son_relations = [(row, col, -1)]
 
         final_row = -1
@@ -482,8 +485,12 @@ class Draza(Agent):
 
         while True:
 
-            row, col, cost, index_of_father = list_for_expanding.pop(0)
+            # node expanding
+            row, col, cost, depth, direction, index_of_father = list_for_expanding.pop(0)
             index_for_sons = father_son_relations.index((row, col, index_of_father))
+
+            # remove potentially same nodes with bigger cost
+            list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
 
             neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, cost, father_son_relations, index_of_father)
 
