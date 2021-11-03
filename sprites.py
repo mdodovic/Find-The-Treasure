@@ -498,17 +498,10 @@ class Draza(Agent):
 
             self.__insert_neighbours_in_appropriate_order(neighbours, list_for_expanding, index_for_sons)
 
-            for neighbour in neighbours:
-                if (neighbour[0], neighbour[1]) == goal:
-
-                    final_row = neighbour[0]  # this is goal position - row
-                    final_col = neighbour[1]  # this is goal position - col
-                    final_index_of_father = index_for_sons  # here we stop our bfs on first find of goal
-                    # so we need to start from the position of goal, and to fetch its father
-                    # because we are in the father's context, index_for_sons is the father's index in the goal's context
-                    break
-
-            if (final_row, final_col) != (-1, -1):
+            if (row, col) == goal:
+                final_row = row
+                final_col = col
+                final_index_of_father = index_for_sons
                 break
 
         path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
