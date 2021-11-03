@@ -1,7 +1,7 @@
 import pygame
 import os
 import config
-
+import numpy as np
 
 class BaseSprite(pygame.sprite.Sprite):
     images = dict()
@@ -518,6 +518,7 @@ class Draza(Agent):
 
 
 class Bole(Agent):
+
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
@@ -536,7 +537,10 @@ class Bole(Agent):
 
         return path_to_root
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_cost, current_father_son_relations, index_of_father, expanded_nodes) -> list:
+    def __calculate_manhattan_distance_to_goal(self, current_row, current_col, goal_row, goal_col):
+        return np.abs(current_row - goal_row) + np.abs(current_col - goal_col)
+
+    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_cost, current_father_son_relations, index_of_father, expanded_nodes, goal_row, goal_col) -> list:
 
         # edges of the board
         top_edge = 0
@@ -554,36 +558,40 @@ class Bole(Agent):
             next_row = current_row - 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 4])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 4])
 
         if current_col < right_edge:
             # east direction
             next_row = current_row
             next_col = current_col + 1
             next_cost = game_map[next_row][next_col].cost()
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 3])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 3])
 
         if current_row < bottom_edge:
             # south direction
             next_row = current_row + 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 2])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 2])
 
         if left_edge < current_col:
             # west direction
             next_row = current_row
             next_col = current_col - 1
             next_cost = game_map[next_row][next_col].cost()
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost, number_of_fields_to_root, 1])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic , number_of_fields_to_root, 1])
 
         return valid_neighbours
 
@@ -605,8 +613,10 @@ class Bole(Agent):
         return new_list_for_expanding
 
     def get_agent_path(self, game_map, goal):
+
         row = self.row
         col = self.col
+        goal_row, goal_col = goal
 
         list_for_expanding = [(row, col, 0, 0, 0, -1)]
         father_son_relations = [(row, col, -1)]
@@ -625,7 +635,7 @@ class Bole(Agent):
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, cost, father_son_relations, index_of_father, expanded_nodes)
+            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, cost, father_son_relations, index_of_father, expanded_nodes, goal_row, goal_col)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
