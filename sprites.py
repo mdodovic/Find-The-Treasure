@@ -558,7 +558,7 @@ class Bole(Agent):
             next_row = current_row - 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 4])
@@ -568,7 +568,7 @@ class Bole(Agent):
             next_row = current_row
             next_col = current_col + 1
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 3])
@@ -578,7 +578,7 @@ class Bole(Agent):
             next_row = current_row + 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 2])
@@ -588,10 +588,10 @@ class Bole(Agent):
             next_row = current_row
             next_col = current_col - 1
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic , number_of_fields_to_root, 1])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 1])
 
         return valid_neighbours
 
@@ -618,7 +618,12 @@ class Bole(Agent):
         col = self.col
         goal_row, goal_col = goal
 
-        list_for_expanding = [(row, col, 0, 0, 0, -1)]
+        initial_field_cost = self.__calculate_manhattan_distance_to_goal(row, col, goal_row, goal_col)
+        initial_field_depth = 0
+        initial_field_direction = 0
+        initial_field_father_index = -1
+
+        list_for_expanding = [(row, col, initial_field_cost, initial_field_depth, initial_field_direction, initial_field_father_index)]
         father_son_relations = [(row, col, -1)]
         expanded_nodes = []
         final_row = -1
@@ -631,6 +636,8 @@ class Bole(Agent):
             row, col, cost, depth, direction, index_of_father = list_for_expanding.pop(0)
             index_for_sons = father_son_relations.index((row, col, index_of_father))
             expanded_nodes.append((row, col))
+
+            cost -= self.__calculate_manhattan_distance_to_goal(row, col, goal_row, goal_col)
 
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
