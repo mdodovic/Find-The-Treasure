@@ -540,6 +540,10 @@ class Bole(Agent):
     def __calculate_manhattan_distance_to_goal(self, current_row, current_col, goal_row, goal_col):
         return np.abs(current_row - goal_row) + np.abs(current_col - goal_col)
 
+    def __calculate_manhattan_cost_to_goal(self, current_row, current_col, goal_row, goal_col):
+        road_cost = 2
+        return self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col) * road_cost
+
     def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_cost, current_father_son_relations, index_of_father, expanded_nodes, goal_row, goal_col) -> list:
 
         # edges of the board
@@ -558,7 +562,7 @@ class Bole(Agent):
             next_row = current_row - 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 4])
@@ -568,7 +572,7 @@ class Bole(Agent):
             next_row = current_row
             next_col = current_col + 1
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 3])
@@ -578,7 +582,7 @@ class Bole(Agent):
             next_row = current_row + 1
             next_col = current_col
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 2])
@@ -588,7 +592,7 @@ class Bole(Agent):
             next_row = current_row
             next_col = current_col - 1
             next_cost = game_map[next_row][next_col].cost()
-            next_heuristic = self.__calculate_manhattan_distance_to_goal(next_row, next_col, goal_row, goal_col)
+            next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 1])
@@ -613,12 +617,11 @@ class Bole(Agent):
         return new_list_for_expanding
 
     def get_agent_path(self, game_map, goal):
-
         row = self.row
         col = self.col
         goal_row, goal_col = goal
 
-        initial_field_cost = self.__calculate_manhattan_distance_to_goal(row, col, goal_row, goal_col)
+        initial_field_cost = self.__calculate_manhattan_cost_to_goal(row, col, goal_row, goal_col)
         initial_field_depth = 0
         initial_field_direction = 0
         initial_field_father_index = -1
@@ -637,7 +640,7 @@ class Bole(Agent):
             index_for_sons = father_son_relations.index((row, col, index_of_father))
             expanded_nodes.append((row, col))
 
-            cost -= self.__calculate_manhattan_distance_to_goal(row, col, goal_row, goal_col)
+            cost -= self.__calculate_manhattan_cost_to_goal(row, col, goal_row, goal_col)
 
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
