@@ -70,35 +70,23 @@ class Aki(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
-    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations) -> list:
-        """
-        This method returns the list of fields from the tree bottom, that is given as an argument, to the tree root
-        Fields are described as an arranged couple (row, column)
+    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
 
-        :param root_row: root of the tree - row
-        :param root_col: root of the tree - column
-        :param start_row: position from which the path is calculated - row
-        :param start_col: position from which the path is calculated - column
-        :param current_father_son_relations: list of relations between nodes in the tree,
-        each element of the list contains two tuples, first is father node and the second is son node
-        :return: list of fields from start node to the root of the tree
-        """
         path_to_root = [(start_row, start_col)]
 
-        while (start_row, start_col) != (root_row, root_col):
+        index = index_of_father
+        while index != -1:
 
-            for father_son in current_father_son_relations:
-                father, son = father_son
+            father_row, father_col, next_father_index = current_father_son_relations[index]
 
-                if son == (start_row, start_col):
-                    start_row, start_col = father
-                    break
+            path_to_root.append((father_row, father_col))
 
-            path_to_root.append((start_row, start_col))
+            index = next_father_index
 
         return path_to_root
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations) -> list:
+
+    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father) -> list:
 
         # edges of the board
         top_edge = 0
@@ -106,7 +94,7 @@ class Aki(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations)
+        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
 
         valid_neighbours = []
 
@@ -148,45 +136,49 @@ class Aki(Agent):
 
         return valid_neighbours
 
-    def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding):
+    def __add_neighbours_to_father_son_relations(self, neighbours, father_son_relations, index_for_sons):
+
+        for neighbour in neighbours:
+            father_son_relations.append((neighbour[0], neighbour[1], index_for_sons))
+
+
+    def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
 
         neighbours.sort(key=lambda elem: (elem[2], -elem[3]))
 
         neighbours.reverse()
 
         for neighbour in neighbours:
-            list_for_expanding.append((neighbour[0], neighbour[1]))
+            list_for_expanding.append((neighbour[0], neighbour[1], father_index))
 
     def get_agent_path(self, game_map, goal):
 
         row = self.row
         col = self.col
 
-        list_for_expanding = []
-        father_son_relations = []
+        list_for_expanding = [(row, col, -1)]
+        father_son_relations = [(row, col, -1)]
 
         while True:
-            # print("expanded", row, col)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations)
+            # node expanding
+            row, col, index_of_father = list_for_expanding.pop()
+            index_for_sons = father_son_relations.index((row, col, index_of_father))
 
-            self.__insert_neighbours_in_appropriate_order(neighbours, list_for_expanding)
+            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father)
 
-            next_row, next_col = list_for_expanding.pop()
+            self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
-            # print("go to", next_row, next_col)
+            self.__insert_neighbours_in_appropriate_order(neighbours, list_for_expanding, index_for_sons)
 
-            father_son_relations.append([(row, col), (next_row, next_col)])
 
-            if (next_row, next_col) == goal:
-                final_row = next_row
-                final_col = next_col
+            if (row, col) == goal:
+                final_row = row
+                final_col = col
+                final_index_of_father = index_of_father
                 break
 
-            row = next_row
-            col = next_col
-
-        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations)
+        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
         path_tuples.reverse()
 
         path_fields = []
