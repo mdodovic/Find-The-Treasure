@@ -256,7 +256,7 @@ class Jocke(Agent):
         for neighbour in neighbours:
             father_son_relations.append((neighbour[0], neighbour[1], index_for_sons))
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father) -> list:
+    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father, expanded_nodes) -> list:
 
         # edges of the board
         top_edge = 0
@@ -274,7 +274,7 @@ class Jocke(Agent):
             next_col = current_col
             next_average = 0
 
-            if (next_row, next_col) not in path_to_root:
+            if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, next_average, 4])
 
         if current_col < right_edge:
@@ -283,7 +283,7 @@ class Jocke(Agent):
             next_col = current_col + 1
             next_average = 0
 
-            if (next_row, next_col) not in path_to_root:
+            if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, next_average, 3])
 
         if current_row < bottom_edge:
@@ -292,7 +292,7 @@ class Jocke(Agent):
             next_col = current_col
             next_average = 0
 
-            if (next_row, next_col) not in path_to_root:
+            if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, next_average, 2])
 
         if left_edge < current_col:
@@ -301,7 +301,7 @@ class Jocke(Agent):
             next_col = current_col - 1
             next_average = 0
 
-            if (next_row, next_col) not in path_to_root:
+            if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
                 valid_neighbours.append([next_row, next_col, next_average, 1])
 
         return valid_neighbours
@@ -328,6 +328,11 @@ class Jocke(Agent):
         for neighbour in neighbours:
             list_for_expanding.append((neighbour[0], neighbour[1], father_index))
 
+    def __remove_more_expensive_fields(self, row, col, list_for_expanding):
+
+        new_list_for_expanding = [field for field in list_for_expanding if field[0] != row or field[1] != col]
+        return new_list_for_expanding
+
     def get_agent_path(self, game_map, goal):
 
         row = self.row
@@ -335,6 +340,7 @@ class Jocke(Agent):
 
         list_for_expanding = [(row, col, -1)]
         father_son_relations = [(row, col, -1)]
+        expanded_nodes = []
 
         final_row = -1
         final_col = -1
@@ -344,8 +350,13 @@ class Jocke(Agent):
 
             row, col, index_of_father = list_for_expanding.pop(0)
             index_for_sons = father_son_relations.index((row, col, index_of_father))
+            expanded_nodes.append((row, col))
+            print(row, col)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father)
+            # remove potentially same nodes with bigger cost
+            list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
+
+            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father, expanded_nodes)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
