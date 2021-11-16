@@ -100,7 +100,6 @@ class Aki(Agent):
 
         return path_to_root
 
-
     def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father) -> list:
 
         # edges of the board
@@ -155,7 +154,6 @@ class Aki(Agent):
 
         for neighbour in neighbours:
             father_son_relations.append((neighbour[0], neighbour[1], index_for_sons))
-
 
     def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
 
