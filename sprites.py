@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 import pygame
 import os
 import config
@@ -157,6 +159,7 @@ class Agent(BaseSprite):
         self.rect.x = col * config.TILE_SIZE
         self.rect.y = row * config.TILE_SIZE
 
+    @abstractmethod
     def __get_path_to_root(self, start_row: int, start_col: int,
                            current_father_son_relations: list, index_of_father: int) -> list:
         """
@@ -171,6 +174,19 @@ class Agent(BaseSprite):
         """
         pass
 
+    @abstractmethod
+    def __add_neighbours_to_father_son_relations(self, neighbours: list, father_son_relations: list,
+                                                 index_for_sons: int):
+        """
+        Add current field neighbours to the tree. Father's index for the structure (row, col, father_index),
+            father_index will be index_for_sons.
+        :param neighbours: List of current field neighbours
+        :param father_son_relations: list that represents tree
+        :param index_for_sons: current field index in father_son_relations list
+        """
+        pass
+
+    @abstractmethod
     def get_agent_path(self, game_map: list, goal: Goal) -> list:
         """
         Return the list of fields from start to goal field, using the Agent's specified algorithm.
@@ -185,6 +201,14 @@ class Agent(BaseSprite):
 class ExampleAgent(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
+
+    def __get_path_to_root(self, start_row: int, start_col: int,
+                           current_father_son_relations: list, index_of_father: int) -> list:
+        pass
+
+    def __add_neighbours_to_father_son_relations(self, neighbours: list, father_son_relations: list,
+                                                 index_for_sons: int):
+        pass
 
     def get_agent_path(self, game_map, goal):
         path = [game_map[self.row][self.col]]
