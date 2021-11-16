@@ -23,6 +23,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.row = row
         self.col = col
 
+
 class Tile(BaseSprite):
     def __init__(self, row, col, file_name):
         super(Tile, self).__init__(row, col, file_name)
@@ -220,7 +221,8 @@ class Aki(Agent):
 
         return path_to_root
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father) -> list:
+    def __get_valid_neighbours(self, game_map, current_row, current_col, current_father_son_relations,
+                               index_of_father) -> list:
 
         # edges of the board
         top_edge = 0
@@ -298,7 +300,7 @@ class Aki(Agent):
             row, col, index_of_father = list_for_expanding.pop()
             index_for_sons = father_son_relations.index((row, col, index_of_father))
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father)
+            neighbours = self.__get_valid_neighbours(game_map, row, col, father_son_relations, index_of_father)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
@@ -389,7 +391,8 @@ class Jocke(Agent):
         for neighbour in neighbours:
             father_son_relations.append((neighbour[0], neighbour[1], index_for_sons))
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_father_son_relations, index_of_father, expanded_nodes) -> list:
+    def __get_valid_neighbours(self, game_map, current_row, current_col, current_father_son_relations, index_of_father,
+                               expanded_nodes) -> list:
 
         # edges of the board
         top_edge = 0
@@ -446,7 +449,8 @@ class Jocke(Agent):
             current_field_row = neighbours[i][0]
             current_field_col = neighbours[i][1]
 
-            all_neighbours_except_fathers = self.__get_all_neighbours_except_fathers(game_map, current_field_row, current_field_col, father_row, father_col)
+            all_neighbours_except_fathers = self.__get_all_neighbours_except_fathers(
+                game_map, current_field_row, current_field_col, father_row, father_col)
 
             neighbours[i][2] = 0
             for current_field_neighbour in all_neighbours_except_fathers:
@@ -489,7 +493,8 @@ class Jocke(Agent):
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, father_son_relations, index_of_father, expanded_nodes)
+            neighbours = self.__get_valid_neighbours(game_map, row, col, father_son_relations, index_of_father,
+                                                     expanded_nodes)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
@@ -504,7 +509,7 @@ class Jocke(Agent):
                     final_col = neighbour[1]  # this is goal position - col
                     final_index_of_father = index_for_sons  # here we stop our bfs on first find of goal
                     # so we need to start from the position of goal, and to fetch its father
-                    # because we are in the father's context, index_for_sons is the father's index in the goal's context!
+                    # because we are in the father's context, index_for_sons is the father's index in the goal's context
                     break
 
             if (final_row, final_col) != (-1, -1):
@@ -540,7 +545,8 @@ class Draza(Agent):
 
         return path_to_root
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_cost, current_father_son_relations, index_of_father, expanded_nodes) -> list:
+    def __get_valid_neighbours(self, game_map, current_row, current_col, current_cost, current_father_son_relations,
+                               index_of_father, expanded_nodes) -> list:
 
         # edges of the board
         top_edge = 0
@@ -599,7 +605,8 @@ class Draza(Agent):
     def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
 
         for neighbour in neighbours:
-            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], neighbour[3], neighbour[4], father_index))
+            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], neighbour[3], neighbour[4],
+                                       father_index))
 
         list_for_expanding.sort(key=lambda elem: (elem[2], elem[3], -elem[4]))
 
@@ -630,7 +637,8 @@ class Draza(Agent):
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, cost, father_son_relations, index_of_father, expanded_nodes)
+            neighbours = self.__get_valid_neighbours(game_map, row, col, cost, father_son_relations, index_of_father,
+                                                     expanded_nodes)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
@@ -680,7 +688,8 @@ class Bole(Agent):
         road_cost = 2
         return self.__calculate_manhattan_distance_to_goal(current_row, current_col, goal_row, goal_col) * road_cost
 
-    def __get_valid_neighbours(self, root_row, root_col, game_map, current_row, current_col, current_cost, current_father_son_relations, index_of_father, expanded_nodes, goal_row, goal_col) -> list:
+    def __get_valid_neighbours(self, game_map, current_row, current_col, current_cost, current_father_son_relations,
+                               index_of_father, expanded_nodes, goal_row, goal_col) -> list:
 
         # edges of the board
         top_edge = 0
@@ -701,7 +710,8 @@ class Bole(Agent):
             next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 4])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic,
+                                         number_of_fields_to_root, 4])
 
         if current_col < right_edge:
             # east direction
@@ -711,7 +721,8 @@ class Bole(Agent):
             next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 3])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic,
+                                         number_of_fields_to_root, 3])
 
         if current_row < bottom_edge:
             # south direction
@@ -721,7 +732,8 @@ class Bole(Agent):
             next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 2])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic,
+                                         number_of_fields_to_root, 2])
 
         if left_edge < current_col:
             # west direction
@@ -731,7 +743,8 @@ class Bole(Agent):
             next_heuristic = self.__calculate_manhattan_cost_to_goal(next_row, next_col, goal_row, goal_col)
 
             if (next_row, next_col) not in path_to_root and (next_row, next_col) not in expanded_nodes:
-                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic, number_of_fields_to_root, 1])
+                valid_neighbours.append([next_row, next_col, current_cost + next_cost + next_heuristic,
+                                         number_of_fields_to_root, 1])
 
         return valid_neighbours
 
@@ -743,7 +756,8 @@ class Bole(Agent):
     def __insert_neighbours_in_appropriate_order(self, neighbours, list_for_expanding, father_index):
 
         for neighbour in neighbours:
-            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], neighbour[3], neighbour[4], father_index))
+            list_for_expanding.append((neighbour[0], neighbour[1], neighbour[2], neighbour[3], neighbour[4],
+                                       father_index))
 
         list_for_expanding.sort(key=lambda elem: (elem[2], elem[3], -elem[4]))
 
@@ -762,7 +776,8 @@ class Bole(Agent):
         initial_field_direction = 0
         initial_field_father_index = -1
 
-        list_for_expanding = [(row, col, initial_field_cost, initial_field_depth, initial_field_direction, initial_field_father_index)]
+        list_for_expanding = [(row, col, initial_field_cost, initial_field_depth, initial_field_direction,
+                               initial_field_father_index)]
         father_son_relations = [(row, col, -1)]
         expanded_nodes = []
 
@@ -778,7 +793,8 @@ class Bole(Agent):
             # remove potentially same nodes with bigger cost
             list_for_expanding = self.__remove_more_expensive_fields(row, col, list_for_expanding)
 
-            neighbours = self.__get_valid_neighbours(self.row, self.col, game_map, row, col, cost, father_son_relations, index_of_father, expanded_nodes, goal_row, goal_col)
+            neighbours = self.__get_valid_neighbours(game_map, row, col, cost, father_son_relations, index_of_father,
+                                                     expanded_nodes, goal_row, goal_col)
 
             self.__add_neighbours_to_father_son_relations(neighbours, father_son_relations, index_for_sons)
 
@@ -799,5 +815,3 @@ class Bole(Agent):
             path_fields.append(game_map[row_col[0]][row_col[1]])
 
         return path_fields
-
-
