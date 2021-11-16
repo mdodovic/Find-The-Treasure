@@ -3,6 +3,7 @@ import os
 import config
 import numpy as np
 
+
 class BaseSprite(pygame.sprite.Sprite):
     images = dict()
 
@@ -39,6 +40,20 @@ class Agent(BaseSprite):
         self.rect.x = col * config.TILE_SIZE
         self.rect.y = row * config.TILE_SIZE
 
+    def __get_path_to_root(self, start_row: int, start_col: int,
+                           current_father_son_relations: list, index_of_father: int) -> list:
+        """
+        Return the list of fields from the lief: (start_row, start_col) to the tree root.
+
+        :return: List<(row,col) List of fields including the start field and the root field.
+        :param start_row: start field row
+        :param start_col: start field column
+        :param current_father_son_relations: list of extended fields (row, col, father_index). father_index is the index
+            of the (row, col) father
+        :param index_of_father: index of (start_row, start_col) father
+        """
+        pass
+
     # game_map - list of lists of elements of type Tile
     # goal - (row, col)
     # return value - list of elements of type Tile
@@ -70,7 +85,7 @@ class Aki(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
-    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
+    def __get_path_to_root(self, start_row, start_col, current_father_son_relations, index_of_father) -> list:
 
         path_to_root = [(start_row, start_col)]
 
@@ -94,7 +109,7 @@ class Aki(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
+        path_to_root = self.__get_path_to_root(current_row, current_col, current_father_son_relations, index_of_father)
 
         valid_neighbours = []
 
@@ -178,7 +193,7 @@ class Aki(Agent):
                 final_index_of_father = index_of_father
                 break
 
-        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
+        path_tuples = self.__get_path_to_root(final_row, final_col, father_son_relations, final_index_of_father)
         path_tuples.reverse()
 
         path_fields = []
@@ -193,7 +208,7 @@ class Jocke(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
-    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
+    def __get_path_to_root(self, start_row, start_col, current_father_son_relations, index_of_father) -> list:
 
         path_to_root = [(start_row, start_col)]
 
@@ -264,7 +279,7 @@ class Jocke(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
+        path_to_root = self.__get_path_to_root(current_row, current_col, current_father_son_relations, index_of_father)
 
         valid_neighbours = []
 
@@ -377,7 +392,7 @@ class Jocke(Agent):
             if (final_row, final_col) != (-1, -1):
                 break
 
-        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
+        path_tuples = self.__get_path_to_root(final_row, final_col, father_son_relations, final_index_of_father)
         path_tuples.reverse()
 
         path_fields = []
@@ -392,7 +407,7 @@ class Draza(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
-    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
+    def __get_path_to_root(self, start_row, start_col, current_father_son_relations, index_of_father) -> list:
 
         path_to_root = [(start_row, start_col)]
 
@@ -415,7 +430,7 @@ class Draza(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
+        path_to_root = self.__get_path_to_root(current_row, current_col, current_father_son_relations, index_of_father)
         number_of_fields_to_root = len(path_to_root)
 
         valid_neighbours = []
@@ -509,7 +524,7 @@ class Draza(Agent):
                 final_index_of_father = index_of_father
                 break
 
-        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
+        path_tuples = self.__get_path_to_root(final_row, final_col, father_son_relations, final_index_of_father)
         path_tuples.reverse()
 
         path_fields = []
@@ -525,7 +540,7 @@ class Bole(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
 
-    def __get_path_to_root(self, root_row, root_col, start_row, start_col, current_father_son_relations, index_of_father) -> list:
+    def __get_path_to_root(self, start_row, start_col, current_father_son_relations, index_of_father) -> list:
 
         path_to_root = [(start_row, start_col)]
 
@@ -555,7 +570,7 @@ class Bole(Agent):
         bottom_edge = len(game_map) - 1
         left_edge = 0
 
-        path_to_root = self.__get_path_to_root(root_row, root_col, current_row, current_col, current_father_son_relations, index_of_father)
+        path_to_root = self.__get_path_to_root(current_row, current_col, current_father_son_relations, index_of_father)
         number_of_fields_to_root = len(path_to_root)
 
         valid_neighbours = []
@@ -632,9 +647,6 @@ class Bole(Agent):
         list_for_expanding = [(row, col, initial_field_cost, initial_field_depth, initial_field_direction, initial_field_father_index)]
         father_son_relations = [(row, col, -1)]
         expanded_nodes = []
-        final_row = -1
-        final_col = -1
-        final_index_of_father = -1
 
         while True:
 
@@ -660,7 +672,7 @@ class Bole(Agent):
                 final_index_of_father = index_of_father
                 break
 
-        path_tuples = self.__get_path_to_root(self.row, self.col, final_row, final_col, father_son_relations, final_index_of_father)
+        path_tuples = self.__get_path_to_root(final_row, final_col, father_son_relations, final_index_of_father)
         path_tuples.reverse()
 
         path_fields = []
