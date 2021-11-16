@@ -306,7 +306,6 @@ class Aki(Agent):
 
             self.__insert_neighbours_in_appropriate_order(neighbours, list_for_expanding, index_for_sons)
 
-
             if (row, col) == goal:
                 final_row = row
                 final_col = col
@@ -623,9 +622,6 @@ class Draza(Agent):
         list_for_expanding = [(row, col, 0, 0, 0, -1)]
         father_son_relations = [(row, col, -1)]
         expanded_nodes = []
-        final_row = -1
-        final_col = -1
-        final_index_of_father = -1
 
         while True:
 
