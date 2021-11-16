@@ -23,6 +23,122 @@ class BaseSprite(pygame.sprite.Sprite):
         self.row = row
         self.col = col
 
+class Tile(BaseSprite):
+    def __init__(self, row, col, file_name):
+        super(Tile, self).__init__(row, col, file_name)
+
+    def position(self):
+        return self.row, self.col
+
+    def cost(self):
+        pass
+
+    def kind(self):
+        pass
+
+    def __str__(self) -> str:
+        pass
+
+
+class Stone(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'stone.png')
+
+    def cost(self):
+        return 1000
+
+    def kind(self):
+        return 's'
+
+    def __str__(self) -> str:
+        return "Stone [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Water(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'water.png')
+
+    def cost(self):
+        return 500
+
+    def kind(self):
+        return 'w'
+
+    def __str__(self) -> str:
+        return "Water [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Road(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'road.png')
+
+    def cost(self):
+        return 2
+
+    def kind(self):
+        return 'r'
+
+    def __str__(self) -> str:
+        return "Road [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Grass(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'grass.png')
+
+    def cost(self):
+        return 3
+
+    def kind(self):
+        return 'g'
+
+    def __str__(self) -> str:
+        return "Grass [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Mud(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'mud.png')
+
+    def cost(self):
+        return 5
+
+    def kind(self):
+        return 'm'
+
+    def __str__(self) -> str:
+        return "Mud [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Dune(Tile):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'dune.png')
+
+    def cost(self):
+        return 7
+
+    def kind(self):
+        return 's'
+
+    def __str__(self) -> str:
+        return "Dune [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
+
+
+class Goal(BaseSprite):
+    def __init__(self, row, col):
+        super().__init__(row, col, 'x.png', config.DARK_GREEN)
+
+
+class Trail(BaseSprite):
+    def __init__(self, row, col, num):
+        super().__init__(row, col, 'trail.png', config.DARK_GREEN)
+        self.num = num
+
+    def draw(self, screen):
+        text = config.GAME_FONT.render(f'{self.num}', True, config.WHITE)
+        text_rect = text.get_rect(center=self.rect.center)
+        screen.blit(text, text_rect)
+
 
 class Agent(BaseSprite):
     def __init__(self, row, col, file_name):
@@ -45,7 +161,7 @@ class Agent(BaseSprite):
         """
         Return the list of fields from the lief: (start_row, start_col) to the tree root.
 
-        :return: List<(row,col) List of fields including the start field and the root field.
+        :return: List of fields including the start field and the root field.
         :param start_row: start field row
         :param start_col: start field column
         :param current_father_son_relations: list of extended fields (row, col, father_index). father_index is the index
@@ -54,10 +170,14 @@ class Agent(BaseSprite):
         """
         pass
 
-    # game_map - list of lists of elements of type Tile
-    # goal - (row, col)
-    # return value - list of elements of type Tile
-    def get_agent_path(self, game_map, goal):
+    def get_agent_path(self, game_map: list, goal: Goal) -> list:
+        """
+        Return the list of fields from start to goal field, using the Agent's specified algorithm.
+
+        :return: Final list of fields
+        :param game_map: map which is used by Agent
+        :param goal: field that Agent need to reach
+        """
         pass
 
 
@@ -681,118 +801,3 @@ class Bole(Agent):
         return path_fields
 
 
-class Tile(BaseSprite):
-    def __init__(self, row, col, file_name):
-        super(Tile, self).__init__(row, col, file_name)
-
-    def position(self):
-        return self.row, self.col
-
-    def cost(self):
-        pass
-
-    def kind(self):
-        pass
-
-    def __str__(self) -> str:
-        pass
-
-
-class Stone(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'stone.png')
-
-    def cost(self):
-        return 1000
-
-    def kind(self):
-        return 's'
-
-    def __str__(self) -> str:
-        return "Stone [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Water(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'water.png')
-
-    def cost(self):
-        return 500
-
-    def kind(self):
-        return 'w'
-
-    def __str__(self) -> str:
-        return "Water [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Road(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'road.png')
-
-    def cost(self):
-        return 2
-
-    def kind(self):
-        return 'r'
-
-    def __str__(self) -> str:
-        return "Road [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Grass(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'grass.png')
-
-    def cost(self):
-        return 3
-
-    def kind(self):
-        return 'g'
-
-    def __str__(self) -> str:
-        return "Grass [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Mud(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'mud.png')
-
-    def cost(self):
-        return 5
-
-    def kind(self):
-        return 'm'
-
-    def __str__(self) -> str:
-        return "Mud [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Dune(Tile):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'dune.png')
-
-    def cost(self):
-        return 7
-
-    def kind(self):
-        return 's'
-
-    def __str__(self) -> str:
-        return "Dune [" + str(self.cost()) + "] (" + str(self.row) + "," + str(self.col) + ")"
-
-
-class Goal(BaseSprite):
-    def __init__(self, row, col):
-        super().__init__(row, col, 'x.png', config.DARK_GREEN)
-
-
-class Trail(BaseSprite):
-    def __init__(self, row, col, num):
-        super().__init__(row, col, 'trail.png', config.DARK_GREEN)
-        self.num = num
-
-    def draw(self, screen):
-        text = config.GAME_FONT.render(f'{self.num}', True, config.WHITE)
-        text_rect = text.get_rect(center=self.rect.center)
-        screen.blit(text, text_rect)
