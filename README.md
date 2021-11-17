@@ -7,7 +7,9 @@ Game represents the squared map where every field is one of the several types. T
 There are 4 agents, Aki, Jocke, Draza and Bole, and according to this, there are 4 different strategies. 
 #### Aki
 Aki uses the Depth First Search (DFS) algorithm, with the direction prioriting as the cheapest neighbours field. If the neighbours has the same cost, the direction is priorited in north-east-south-west order. Toy example of DFS algorithm is in the following image:
-![map0_Aki](https://github.com/mdodovic/Find-The-Treasure/tree/main/solutions/aki/map0_solution.png?raw=true)
+
+![map0Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map3_solution.png?raw=true)
+
 #### Jocke
 Jocke uses the Breadth First Search (BFS) algorithm, with the direction prioriting as the field whom neighbours, excluding the current field, has the lowest average price. 
 #### Draza
