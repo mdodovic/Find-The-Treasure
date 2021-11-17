@@ -30,16 +30,24 @@ Some of the agents' paths are shown in the following images:
 
 ![map4Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map4_solution.png?raw=true)
 
-![map5Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map5_solution.png?raw=true)
+![map4Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map4_solution.png?raw=true)
 
-![map5Draza](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/draza/map5_solution.png?raw=true)
+![map4Draza](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/draza/map4_solution.png?raw=true)
 
-![map5Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map5_solution.png?raw=true)
+![map4Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map4_solution.png?raw=true)
 
+![map6Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map6_solution.png?raw=true)
 
+![map6Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map6_solution.png?raw=true)
 
-![map0Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map3_solution.png?raw=true)
+![map6Draza](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/draza/map6_solution.png?raw=true)
 
+![map6Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map6_solution.png?raw=true)
 
-![map0Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map3_solution.png?raw=true)
+![map7Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map7_solution.png?raw=true)
 
+![map7Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map7_solution.png?raw=true)
+
+![map7Draza](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/draza/map7_solution.png?raw=true)
+
+![map7Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map7_solution.png?raw=true)
