@@ -187,6 +187,18 @@ class Agent(BaseSprite):
         pass
 
     @abstractmethod
+    def __insert_neighbours_in_appropriate_order(self, neighbours: list, list_for_expanding: list, father_index: int):
+        """
+        Insert field's neighbours to the list_for_expanding in the right order. That list is the crucial for any
+            algorithm, and this rule for inserting is defined by the algorithm itself.
+        :param neighbours: current field's neighbours (only in 4 directions: up, right, down, left).
+        :param list_for_expanding: current list of non-expanded fields. It contains fields that will be going to expand
+            in the order defined by the appropriate algorithm.
+        :param father_index: index of current field's father in the father_son_relations list
+        """
+        pass
+
+    @abstractmethod
     def get_agent_path(self, game_map: list, goal: Goal) -> list:
         """
         Return the list of fields from start to goal field, using the Agent's specified algorithm.
@@ -208,6 +220,9 @@ class ExampleAgent(Agent):
 
     def __add_neighbours_to_father_son_relations(self, neighbours: list, father_son_relations: list,
                                                  index_for_sons: int):
+        pass
+
+    def __insert_neighbours_in_appropriate_order(self, neighbours: list, list_for_expanding: list, father_index: int):
         pass
 
     def get_agent_path(self, game_map, goal):
