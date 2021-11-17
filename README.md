@@ -1,7 +1,7 @@
 # Find-The-Treasure
 
 ## About the Game
-Game represents the squared map where every field is one of the several types. There are 6 types of field, with the given price in the brackets, road (2), grass (3), mud(5), sand(7), water (500) and stone (1000). When you are crossing the field, your path cost is incremented with the appropriate price. Agents need to find the treasure, marked as X on map, using one of the following searching algorithms. Full project description can be found [here] (https://github.com/mdodovic/SymPyCAP/blob/main/test_examples/SymPyCAP_notebook_examples.ipynb).
+Game represents the squared map where every field is one of the several types. There are 6 types of field, with the given price in the brackets, road (2), grass (3), mud(5), sand(7), water (500) and stone (1000). When you are crossing the field, your path cost is incremented with the appropriate price. Agents need to find the treasure, marked as X on map, using one of the following searching algorithms. Full project description can be found [here](https://github.com/mdodovic/Find-The-Treasure/blob/main/description.pdf).
 
 ## Agents
 There are 4 agents, Aki, Jocke, Draza and Bole, and according to this, there are 4 different strategies. 
