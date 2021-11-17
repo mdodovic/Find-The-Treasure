@@ -28,7 +28,7 @@ Bole uses the A* algorithm with the same logic as Draza's approach as far as the
 ## Solutions
 Some of the agents' paths are shown in the following images:
 
-![map5Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map5_solution.png?raw=true)
+![map4Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map4_solution.png?raw=true)
 
 ![map5Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map5_solution.png?raw=true)
 
