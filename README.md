@@ -1,7 +1,7 @@
 # Find-The-Treasure
 
 ## About the Game
-Game represents the squared map where every field is one of the several types. There are 6 types of field, with the given price in the brackets, road (2), grass (3), mud(5), sand(7), water (500) and stone (1000). When you are crossing the field, your path cost is incremented with the appropriate price. Agents need to find the treasure, marked as X on map, using one of the following searching algorithms.
+Game represents the squared map where every field is one of the several types. There are 6 types of field, with the given price in the brackets, road (2), grass (3), mud(5), sand(7), water (500) and stone (1000). When you are crossing the field, your path cost is incremented with the appropriate price. Agents need to find the treasure, marked as X on map, using one of the following searching algorithms. Full project description can be found [here] (https://github.com/mdodovic/SymPyCAP/blob/main/test_examples/SymPyCAP_notebook_examples.ipynb).
 
 ## Agents
 There are 4 agents, Aki, Jocke, Draza and Bole, and according to this, there are 4 different strategies. 
@@ -28,6 +28,8 @@ Bole uses the A* algorithm with the same logic as Draza's approach as far as the
 ## Solutions
 Some of the agents' paths are shown in the following images:
 
+### Map 4
+
 ![map4Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map4_solution.png?raw=true)
 
 ![map4Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map4_solution.png?raw=true)
@@ -36,6 +38,8 @@ Some of the agents' paths are shown in the following images:
 
 ![map4Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map4_solution.png?raw=true)
 
+### Map 6
+
 ![map6Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map6_solution.png?raw=true)
 
 ![map6Jocke](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/jocke/map6_solution.png?raw=true)
@@ -43,6 +47,8 @@ Some of the agents' paths are shown in the following images:
 ![map6Draza](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/draza/map6_solution.png?raw=true)
 
 ![map6Bole](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/bole/map6_solution.png?raw=true)
+
+### Map 7
 
 ![map7Aki](https://github.com/mdodovic/Find-The-Treasure/blob/main/solutions/aki/map7_solution.png?raw=true)
 
